@@ -26,15 +26,11 @@ npm run dev
 
 在项目根目录创建 `.env`（可参考 `.env.example`）。本项目在 `vite.config.js` 中配置了 `envPrefix: ['VITE_', 'CHAT_']`，因此以 `CHAT_` 或 `VITE_` 开头的变量会注入到前端代码的 `import.meta.env` 中。
 
-
-| 变量                          | 必填  | 说明                                                                                |
-| --------------------------- | --- | --------------------------------------------------------------------------------- |
-| `CHAT_API_URL`              | 建议  | 聊天接口完整 URL，例如 `http://127.0.0.1:8000/v1/chat/completions`。未配置时界面仍可打开，发送消息会进入演示提示。 |
-| `CHAT_GUARDRAILS_CONFIG_ID` | 否   | 请求体 `guardrails.config_id`，默认 `mybot`。                                            |
-| `CHAT_MODEL`                | 否   | 请求体 `model`，默认 `deepseek-r1:8b`。                                                  |
-
-
-
+| 变量                        | 必填 | 说明                                                                                                               |
+| --------------------------- | ---- | ------------------------------------------------------------------------------------------------------------------ |
+| `CHAT_API_URL`              | 建议 | 聊天接口完整 URL，例如 `http://127.0.0.1:8000/v1/chat/completions`。未配置时界面仍可打开，发送消息会进入演示提示。 |
+| `CHAT_GUARDRAILS_CONFIG_ID` | 否   | 请求体 `guardrails.config_id`，默认 `mybot`。                                                                      |
+| `CHAT_MODEL`                | 否   | 请求体 `model`，默认 `deepseek-r1:8b`。                                                                            |
 
 **安全提示：** `.env` 已列入 `.gitignore`，请勿将含密钥或内网地址的 `.env` 提交到 Git。
 
@@ -59,14 +55,12 @@ npm run dev
 
 ## 常用脚本
 
-
-| 命令                | 说明               |
-| ----------------- | ---------------- |
-| `npm run dev`     | 启动开发服务器（热更新）     |
+| 命令              | 说明                     |
+| ----------------- | ------------------------ |
+| `npm run dev`     | 启动开发服务器（热更新） |
 | `npm run build`   | 生产构建，输出到 `dist/` |
-| `npm run preview` | 本地预览生产构建结果       |
-| `npm run lint`    | 运行 ESLint        |
-
+| `npm run preview` | 本地预览生产构建结果     |
+| `npm run lint`    | 运行 ESLint              |
 
 ## 功能说明
 
@@ -85,6 +79,17 @@ src/
   chatStorage.js   # 本地存储与导入导出
   App.jsx
   main.jsx
+```
+
+## Docker
+
+#### 构建 UI 镜像
+
+```bash
+docker build \
+  --build-arg CHAT_API_URL="http://127.0.0.1:8000/v1/chat/completions" \
+  --build-arg CHAT_MODEL="deepseek-r1:8b" \
+  -t guardrail-ui .
 ```
 
 ## 许可证
