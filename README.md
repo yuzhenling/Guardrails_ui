@@ -92,6 +92,12 @@ docker build \
   -t guardrail-ui .
 ```
 
+#### 访问地址
+
+```
+http://localhost:8080/
+```
+
 ## 许可证
 
 私有项目或未声明时，以仓库内约定为准。
