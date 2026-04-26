@@ -10,6 +10,15 @@ import {
 } from './chatStorage.js'
 import './ChatApp.css'
 
+const GUARDRAILS_CONFIG_IDS = [
+  'execution_demo',
+  'retrieval_demo',
+  'dialog_demo',
+  'input_demo',
+  'output_demo',
+  'mybot',
+]
+
 function IconPlus() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -122,6 +131,13 @@ export default function ChatApp() {
   const [isSending, setIsSending] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [renameValue, setRenameValue] = useState('')
+  const [selectedConfigId, setSelectedConfigId] = useState(() => {
+    const fromEnv =
+      import.meta.env.CHAT_GUARDRAILS_CONFIG_ID?.trim() ||
+      import.meta.env.VITE_GUARDRAILS_CONFIG_ID?.trim() ||
+      'mybot'
+    return GUARDRAILS_CONFIG_IDS.includes(fromEnv) ? fromEnv : 'mybot'
+  })
   const importRef = useRef(null)
 
   const active = useMemo(
@@ -152,7 +168,7 @@ export default function ChatApp() {
     async (conversationId, messages) => {
       setIsSending(true)
       try {
-        const text = await sendChat(apiPayload({ messages }))
+        const text = await sendChat(apiPayload({ messages }), { configId: selectedConfigId })
         const assistantId = newMessageId()
         upsertMessages(conversationId, [
           ...messages,
@@ -173,7 +189,7 @@ export default function ChatApp() {
         setIsSending(false)
       }
     },
-    [upsertMessages],
+    [upsertMessages, selectedConfigId],
   )
 
   const handleSend = useCallback(async () => {
@@ -401,7 +417,26 @@ export default function ChatApp() {
       </aside>
 
       <main className="chat-main">
-        <header className="chat-main__header">Guardrails: mybot</header>
+        <header className="chat-main__header">
+          <div className="chat-guardrails-picker">
+            <label className="chat-guardrails-picker__label" htmlFor="guardrails-config-id">
+              Guardrails:
+            </label>
+            <select
+              id="guardrails-config-id"
+              className="chat-guardrails-picker__select"
+              value={selectedConfigId}
+              onChange={(ev) => setSelectedConfigId(ev.target.value)}
+              disabled={isSending}
+            >
+              {GUARDRAILS_CONFIG_IDS.map((id) => (
+                <option key={id} value={id}>
+                  {id}
+                </option>
+              ))}
+            </select>
+          </div>
+        </header>
 
         {!active ? (
           <div className="chat-empty">Select or create a conversation</div>

@@ -3,10 +3,11 @@
  * User text from the page is sent as the last user message `content` (replaces the former fixed "你好呀").
  *
  * @param {{ role: string; content: string }[]} messages
+ * @param {string | undefined} selectedConfigId
  * @returns {{ guardrails: { config_id: string }; model: string; messages: { role: string; content: string }[] }}
  */
-export function buildChatRequestPayload(messages) {
-  const configId =
+export function buildChatRequestPayload(messages, selectedConfigId) {
+  const configId = selectedConfigId?.trim() ||
     import.meta.env.CHAT_GUARDRAILS_CONFIG_ID?.trim() ||
     import.meta.env.VITE_GUARDRAILS_CONFIG_ID?.trim() ||
     'mybot'
@@ -42,9 +43,10 @@ export function parseChatCompletionContent(data) {
 /**
  * POST JSON to CHAT_API_URL
  * @param {{ role: string; content: string }[]} messages
+ * @param {{ configId?: string }} [options]
  * @returns {Promise<string>}
  */
-export async function sendChat(messages) {
+export async function sendChat(messages, options = {}) {
   const url =
     import.meta.env.CHAT_API_URL?.trim() || import.meta.env.VITE_CHAT_API_URL?.trim()
 
@@ -54,7 +56,7 @@ export async function sendChat(messages) {
     return `[演示模式] 尚未配置 CHAT_API_URL。请在 .env 中设置。\n\n你刚才说：${lastUser?.content ?? '（空）'}`
   }
 
-  const payload = buildChatRequestPayload(messages)
+  const payload = buildChatRequestPayload(messages, options.configId)
 
   const res = await fetch(url, {
     method: 'POST',

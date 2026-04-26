@@ -200,11 +200,31 @@
 
 .chat-main__header {
   padding: 14px 20px;
-  text-align: center;
   font-size: 13px;
   color: var(--chat-header);
   border-bottom: 1px solid #0000000d;
   flex-shrink: 0;
+}
+
+.chat-guardrails-picker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.chat-guardrails-picker__label {
+  color: var(--chat-header);
+}
+
+.chat-guardrails-picker__select {
+  min-width: 180px;
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font: inherit;
+  color: #353740;
+  background: #fff;
 }
 
 .chat-scroll {
